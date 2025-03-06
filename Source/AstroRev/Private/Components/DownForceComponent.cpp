@@ -33,6 +33,8 @@ void UDownForceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 		FVector EndPos = Body->GetComponentLocation() - (Body->GetUpVector() * 400);
 		FHitResult HitResult;
 
+		float Angle = FMath::Acos(FVector::DotProduct(Body->GetUpVector(), FVector::UpVector)) * (180.f / PI);
+
 		bool bHit = GetWorld()->LineTraceSingleByChannel(
 			HitResult,
 			StartPos,
@@ -48,11 +50,19 @@ void UDownForceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 		float DownForce = Body->GetMass() * GetWorld()->GetGravityZ();
 
 		if (bHit) {
-			Body->AddForceAtLocation(Body->GetRelativeLocation().UpVector * DownForce, Body->GetComponentLocation());
+			Body->AddForceAtLocation(Body->GetUpVector() * DownForce * DeltaTime * 50, Body->GetComponentLocation());
 		}
 		else {
-			Body->AddForceAtLocation(Body->GetUpVector() * DownForce, Body->GetComponentLocation());
+			Body->AddForceAtLocation(FVector::UpVector * DownForce * DeltaTime * 750, Body->GetComponentLocation());
+
+			if (Angle > 20)
+			{
+				//Body->AddTorqueInDegrees(Body->GetRightVector() * Body->GetMass() * 300.0f * DeltaTime);
+			}
+
 		}
+
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Angle: %f"), Angle));
 	}
 }
 

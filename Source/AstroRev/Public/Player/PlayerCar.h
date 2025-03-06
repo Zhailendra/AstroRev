@@ -8,7 +8,8 @@
 
 class USpringArmComponent;
 class UCameraComponent;
-class UInputComponent;
+class UInputAction;
+class UInputMappingContext;
 
 UCLASS()
 class ASTROREV_API APlayerCar : public ABaseCar
@@ -20,7 +21,7 @@ public:
 
 	virtual void BeginPlay() override;
 	//virtual void Tick(float DeltaTime) override;
-	//virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
 private:
 	UPROPERTY(EditAnywhere, Category = "Component", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
@@ -28,4 +29,13 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Component", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* CameraComponent;
+
+	UPROPERTY(EditAnywhere, Category = "Player Input")
+	UInputMappingContext* PlayerContext;
+
+	UPROPERTY(EditAnywhere, Category = "Player Input")
+	UInputAction* ThrustAction;
+
+	UPROPERTY(EditAnywhere, Category = "Player Input")
+	UInputAction* SteerAction;
 };
