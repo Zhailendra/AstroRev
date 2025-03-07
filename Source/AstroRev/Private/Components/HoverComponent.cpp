@@ -51,8 +51,6 @@ void UHoverComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 			PreviousCompression = Compressor;
 
 			Body->AddForceAtLocation(GetUpVector() * HoverForce, GetComponentLocation());
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Hovering!"));
-
 		}
 	}
  }
