@@ -2,6 +2,7 @@
 
 
 #include "Components/HoverComponent.h"
+#include "Pawns/BaseCar.h"
 
 // Sets default values for this component's properties
 UHoverComponent::UHoverComponent()
@@ -20,6 +21,7 @@ void UHoverComponent::BeginPlay()
 	Super::BeginPlay();
 
 	Body = Cast<UPrimitiveComponent>(GetOwner()->GetRootComponent());
+	BaseCar = Cast<ABaseCar>(GetOwner());
 }
 
 
@@ -28,7 +30,7 @@ void UHoverComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (GetOwner() && Body) {
+	if (GetOwner() && Body != nullptr && BaseCar != nullptr) {
 		FVector StartPos = GetComponentLocation();
 		FVector EndPos = GetComponentLocation() - (GetUpVector() * DistanceBetweenHoverToGround);
 		FHitResult HitResult;
@@ -41,16 +43,23 @@ void UHoverComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 			FCollisionQueryParams("", false, GetOwner())
 		);
 		
-		if (DebugLineTrace) {
+		if (DebugLineTrace == true) {
 			DrawDebugLine(GetWorld(), StartPos, EndPos, bHit ? FColor::Green : FColor::Red, false, DeltaTime, 0, 1.0f);
 		};
+
+		FVector Velocity = Body->GetPhysicsLinearVelocity();
+		float LandingSpeed = Velocity.Size();
+		float DynamicDamping = FMath::Clamp(LandingSpeed / BaseCar->GetAdhesionScale(), 0.1f, 3.0f);
 
 		if (bHit) {
 			float Compressor = (DistanceBetweenHoverToGround - HitResult.Distance) / DistanceBetweenHoverToGround;
 			HoverForce = (Compressor * Stiffness) + ((Compressor - PreviousCompression) / GetWorld()->GetDeltaSeconds() * Damping);
 			PreviousCompression = Compressor;
 
+			HoverForce *= DynamicDamping;
 			Body->AddForceAtLocation(GetUpVector() * HoverForce, GetComponentLocation());
+
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Hover Force: %f"), HoverForce));
 		}
 	}
  }

@@ -2,6 +2,7 @@
 
 
 #include "Components/DownForceComponent.h"
+#include "Pawns/BaseCar.h"
 
 // Sets default values for this component's properties
 UDownForceComponent::UDownForceComponent()
@@ -20,6 +21,7 @@ void UDownForceComponent::BeginPlay()
 	Super::BeginPlay();
 
 	Body = Cast<UPrimitiveComponent>(GetOwner()->GetRootComponent());
+	BaseCar = Cast<ABaseCar>(GetOwner());
 }
 
 
@@ -28,7 +30,8 @@ void UDownForceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (Body != nullptr) {
+	if (Body != nullptr && BaseCar != nullptr) {
+		// Raycasting to the bottom of the car
 		FVector StartPos = Body->GetComponentLocation();
 		FVector EndPos = Body->GetComponentLocation() - (Body->GetUpVector() * 400);
 		FHitResult HitResult;
@@ -47,13 +50,22 @@ void UDownForceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 		DrawDebugLine(GetWorld(), StartPos, EndPos, bHit ? FColor::Green : FColor::Red, false, DeltaTime, 0, 1.0f);
 		//};
 
+		// Setting variables to compute physics
+
+		FVector Velocity = Body->GetPhysicsLinearVelocity();
+
 		float DownForce = Body->GetMass() * GetWorld()->GetGravityZ();
+		float Speed = Velocity.Size();
+		float AdhesionFactor = FMath::Clamp(Speed / BaseCar->GetAdhesionScale(), 1.0f, BaseCar->GetAdhesionMaxForce());
+		float AdjustedDownForce = DownForce * AdhesionFactor;
 
 		if (bHit) {
-			Body->AddForceAtLocation(Body->GetUpVector() * DownForce * DeltaTime * 50, Body->GetComponentLocation());
+			CurrentGravityFactor = FMath::FInterpTo(CurrentGravityFactor, SurfaceGravity, DeltaTime, 1.0f);
+
+			Body->AddForceAtLocation(HitResult.ImpactNormal * AdjustedDownForce * CurrentGravityFactor * DeltaTime, Body->GetComponentLocation());
 		}
 		else {
-			Body->AddForceAtLocation(FVector::UpVector * DownForce * DeltaTime * 750, Body->GetComponentLocation());
+			Body->AddForceAtLocation(FVector::UpVector * DownForce * DeltaTime * AirGravity, Body->GetComponentLocation());
 
 			if (Angle > 20)
 			{
@@ -63,6 +75,8 @@ void UDownForceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 		}
 
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Angle: %f"), Angle));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Velocity: %f"), Speed));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Hover Adhesion Factor: %f"), AdhesionFactor));
 	}
 }
 

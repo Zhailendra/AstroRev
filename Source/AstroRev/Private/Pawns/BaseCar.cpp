@@ -88,6 +88,21 @@ void ABaseCar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
+float ABaseCar::GetMaxSpeed()
+{
+	return MaxSpeed;
+}
+
+float ABaseCar::GetAdhesionScale()
+{
+	return AdhesionScale;
+}
+
+float ABaseCar::GetAdhesionMaxForce()
+{
+	return AdhesionMaxForce;
+}
+
 void ABaseCar::Thrust(const FInputActionValue& Value) {
 	InputThrust = Value.Get<float>();
 }

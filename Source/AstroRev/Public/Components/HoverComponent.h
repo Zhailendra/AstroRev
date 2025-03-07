@@ -6,6 +6,8 @@
 #include "Components/SceneComponent.h"
 #include "HoverComponent.generated.h"
 
+class ABaseCar;
+
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ASTROREV_API UHoverComponent : public USceneComponent
@@ -39,4 +41,6 @@ private:
 	float PreviousCompression = 0.0f;
 
 	UPrimitiveComponent* Body;
+
+	ABaseCar* BaseCar;
 };
