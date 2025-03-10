@@ -44,6 +44,9 @@ protected:
 	float InputThrust = 0.0f;
 	float InputSteer = 0.0f;
 
+	UPROPERTY(EditAnywhere, Category = "Player Movement", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float MaxSpeed = 2000.0f;
+
 private:
 
 	UPROPERTY(EditAnywhere, Category = "Component", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
@@ -72,9 +75,6 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Player Movement", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float Steering = 1000.0f;
-
-	UPROPERTY(EditAnywhere, Category = "Player Movement", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	float MaxSpeed = 2000.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Player Movement", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float MaxSteer = 100.0f;
