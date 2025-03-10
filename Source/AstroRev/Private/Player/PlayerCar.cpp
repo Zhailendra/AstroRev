@@ -9,7 +9,6 @@
 
 #include "Camera/CameraShakeBase.h"
 #include "Camera/MyLegacyCameraShake.h"
-#include "Kismet/GameplayStatics.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Materials/MaterialParameterCollectionInstance.h"
 
@@ -37,18 +36,14 @@ void APlayerCar::BeginPlay() {
 	{
 		FOnTimelineFloat TimelineProgress;
 		TimelineProgress.BindUFunction(this, FName("TimelineUpdate"));
-		SpeedEffectTimeLine.AddInterpFloat(SpeedCurveFloat, TimelineProgress);
 
-		SpeedEffectTimeLine.PlayFromStart();
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Timeline Started"));
+		SpeedEffectTimeLine.AddInterpFloat(SpeedCurveFloat, TimelineProgress);
 	}
 	else
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("SpeedCurveFloat is NOT valid"));
 	}
 
-	bShouldReverse = false;
-	
 }
 
 void APlayerCar::Tick(float DeltaTime)
@@ -66,16 +61,11 @@ void APlayerCar::Tick(float DeltaTime)
 	}
 
 	float Speed = GetVelocity().Size();
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("SPEED: ") + FString::SanitizeFloat(Speed));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("SPEED: ") + FString::SanitizeFloat(Speed));
 
-	if (Speed >= 400.0f && !bShouldReverse)
+	if (Speed < 5500.0f)
 	{
-		bShouldReverse = true;
 		ReverseTimeline();
-	}
-	else if (Speed < 400.0f && bShouldReverse)
-	{
-		bShouldReverse = false;
 	}
 
 	if (CameraComponent)
@@ -103,9 +93,8 @@ void APlayerCar::SetupPlayerInputComponent(class UInputComponent* PlayerInputCom
 	{
 		if (ThrustAction)
 		{
-			EnhancedInputComponent->BindAction(ThrustAction, ETriggerEvent::Triggered, this, &APlayerCar::Thrust);
-			EnhancedInputComponent->BindAction(ThrustAction, ETriggerEvent::Completed, this, &APlayerCar::Thrust);
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("THRUST ENABLED"));
+			EnhancedInputComponent->BindAction(ThrustAction, ETriggerEvent::Triggered, this, &APlayerCar::OnTrustTriggered);
+			EnhancedInputComponent->BindAction(ThrustAction, ETriggerEvent::Completed, this, &APlayerCar::OnThrustCompleted);
 		}
 		if (SteerAction)
 		{
@@ -113,9 +102,19 @@ void APlayerCar::SetupPlayerInputComponent(class UInputComponent* PlayerInputCom
 			EnhancedInputComponent->BindAction(SteerAction, ETriggerEvent::Completed, this, &APlayerCar::Steer);
 		}
 	}
-
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("INPUT"));
 }
+
+void APlayerCar::OnTrustTriggered(const FInputActionValue& Value)
+{
+	SpeedEffectTimeLine.Play();
+	Thrust(Value);
+}
+
+void APlayerCar::OnThrustCompleted(const FInputActionValue& Value)
+{
+	Thrust(Value);
+}
+
 
 void APlayerCar::AddPostProcessEffect()
 {
@@ -124,11 +123,10 @@ void APlayerCar::AddPostProcessEffect()
 		PostProcessMaterial = UMaterialInstanceDynamic::Create(InstanceMaterial, this);
 
 		CameraComponent->PostProcessSettings.AddBlendable(PostProcessMaterial, 1.0f);
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("PostProcessEffect Added"));
 	}
 }
 
-void APlayerCar::TimelineUpdate(float Value)
+void APlayerCar::TimelineUpdate(float Value) const
 {
 	if (MaterialParameterCollection)
 	{
@@ -136,23 +134,18 @@ void APlayerCar::TimelineUpdate(float Value)
 		if (Instance)
 		{
 			Instance->SetScalarParameterValue("Alpha", Value);
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Alpha Value: %f"), Value));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Alpha Value: %f"), Value));
 		}
 	}
 
 	if (PostProcessMaterial)
 	{
 		PostProcessMaterial->SetScalarParameterValue("Alpha", Value);
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("PostProcessMaterial Updated"));
 	}
 }
 
 void APlayerCar::ReverseTimeline()
 {
-	if (SpeedEffectTimeLine.IsPlaying())
-	{
-		SpeedEffectTimeLine.Reverse();
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("Timeline Reversed"));
-	}
+	SpeedEffectTimeLine.Reverse();
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("Timeline Reversed"));
 }
-
