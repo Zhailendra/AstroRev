@@ -27,6 +27,10 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	float GetMaxSpeed();
+	float GetAdhesionScale();
+	float GetAdhesionMaxForce();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -74,4 +78,8 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Player Movement", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float MaxSteer = 100.0f;
+
+	float AdhesionScale = 1000.0f;
+
+	float AdhesionMaxForce = 10.0f;
 };

@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "DownForceComponent.generated.h"
 
+class ABaseCar;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ASTROREV_API UDownForceComponent : public UActorComponent
@@ -23,6 +24,16 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-private:	
+private:
+	UPROPERTY(EditAnywhere, Category = "Properties", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float SurfaceGravity = 100.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Properties", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float AirGravity = 750.0f;
+
+	float CurrentGravityFactor = 1.0f;
+
 	UPrimitiveComponent* Body;
+
+	ABaseCar* BaseCar;
 };
