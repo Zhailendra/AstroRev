@@ -29,9 +29,12 @@ protected:
 	void AddPostProcessEffect();
 
 	UFUNCTION()
-	void TimelineUpdate(float Value);
+	void TimelineUpdate(float Value) const;
 
 	void ReverseTimeline();
+
+	void OnTrustTriggered(const FInputActionValue& Value);
+	void OnThrustCompleted(const FInputActionValue& Value);
 	
 private:
 	UPROPERTY(EditAnywhere, Category = "Component", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
@@ -63,7 +66,5 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "TimeLine")
 	UCurveFloat* SpeedCurveFloat;
-
-	bool bShouldReverse;
 
 };
