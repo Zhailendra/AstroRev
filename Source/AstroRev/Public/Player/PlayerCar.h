@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Pawns/BaseCar.h"
+#include "Components/TimelineComponent.h"
 #include "PlayerCar.generated.h"
 
 class USpringArmComponent;
@@ -20,8 +21,17 @@ public:
 	APlayerCar();
 
 	virtual void BeginPlay() override;
-	//virtual void Tick(float DeltaTime) override;
+	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+protected:
+
+	void AddPostProcessEffect();
+
+	UFUNCTION()
+	void TimelineUpdate(float Value);
+
+	void ReverseTimeline();
 	
 private:
 	UPROPERTY(EditAnywhere, Category = "Component", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
@@ -38,4 +48,22 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Player Input")
 	UInputAction* SteerAction;
+
+	UPROPERTY(EditAnywhere, Category = "Materials")
+	UMaterialInstance* InstanceMaterial;
+
+	UPROPERTY()
+	UMaterialInstanceDynamic* PostProcessMaterial;
+
+	UPROPERTY(EditAnywhere, Category = "Materials")
+	UMaterialParameterCollection* MaterialParameterCollection;
+
+	UPROPERTY(EditAnywhere, Category = "TimeLine")
+	FTimeline SpeedEffectTimeLine;
+
+	UPROPERTY(EditAnywhere, Category = "TimeLine")
+	UCurveFloat* SpeedCurveFloat;
+
+	bool bShouldReverse;
+
 };

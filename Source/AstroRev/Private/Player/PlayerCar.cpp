@@ -7,6 +7,12 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 
+#include "Camera/CameraShakeBase.h"
+#include "Camera/MyLegacyCameraShake.h"
+#include "Kismet/GameplayStatics.h"
+#include "Materials/MaterialInstanceDynamic.h"
+#include "Materials/MaterialParameterCollectionInstance.h"
+
 APlayerCar::APlayerCar()
 {
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
@@ -24,6 +30,67 @@ void APlayerCar::BeginPlay() {
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(PlayerContext, 0);
+		}
+	}
+
+	if (SpeedCurveFloat)
+	{
+		FOnTimelineFloat TimelineProgress;
+		TimelineProgress.BindUFunction(this, FName("TimelineUpdate"));
+		SpeedEffectTimeLine.AddInterpFloat(SpeedCurveFloat, TimelineProgress);
+
+		SpeedEffectTimeLine.PlayFromStart();
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Timeline Started"));
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("SpeedCurveFloat is NOT valid"));
+	}
+
+	bShouldReverse = false;
+	
+}
+
+void APlayerCar::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (SpeedEffectTimeLine.IsPlaying())
+	{
+		SpeedEffectTimeLine.TickTimeline(DeltaTime);
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Timeline is Playing"));
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Timeline is NOT Playing"));
+	}
+
+	float Speed = GetVelocity().Size();
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("SPEED: ") + FString::SanitizeFloat(Speed));
+
+	if (Speed >= 400.0f && !bShouldReverse)
+	{
+		bShouldReverse = true;
+		ReverseTimeline();
+	}
+	else if (Speed < 400.0f && bShouldReverse)
+	{
+		bShouldReverse = false;
+	}
+
+	if (CameraComponent)
+	{
+		float NewFOV = FMath::Clamp(FMath::Lerp(80.0f, 100.0f, Speed / MaxSpeed), 80.0f, 100.0f);
+		CameraComponent->SetFieldOfView(NewFOV);
+
+		if (Speed > 5000.0f) 
+		{
+			APlayerController* PlayerController = Cast<APlayerController>(GetController());
+			if (PlayerController)
+			{
+				PlayerController->ClientStartCameraShake(UMyLegacyCameraShake::StaticClass());
+			}
+			AddPostProcessEffect();
 		}
 	}
 }
@@ -49,3 +116,43 @@ void APlayerCar::SetupPlayerInputComponent(class UInputComponent* PlayerInputCom
 
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("INPUT"));
 }
+
+void APlayerCar::AddPostProcessEffect()
+{
+	if (CameraComponent && InstanceMaterial)
+	{
+		PostProcessMaterial = UMaterialInstanceDynamic::Create(InstanceMaterial, this);
+
+		CameraComponent->PostProcessSettings.AddBlendable(PostProcessMaterial, 1.0f);
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("PostProcessEffect Added"));
+	}
+}
+
+void APlayerCar::TimelineUpdate(float Value)
+{
+	if (MaterialParameterCollection)
+	{
+		UMaterialParameterCollectionInstance* Instance = GetWorld()->GetParameterCollectionInstance(MaterialParameterCollection);
+		if (Instance)
+		{
+			Instance->SetScalarParameterValue("Alpha", Value);
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Alpha Value: %f"), Value));
+		}
+	}
+
+	if (PostProcessMaterial)
+	{
+		PostProcessMaterial->SetScalarParameterValue("Alpha", Value);
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("PostProcessMaterial Updated"));
+	}
+}
+
+void APlayerCar::ReverseTimeline()
+{
+	if (SpeedEffectTimeLine.IsPlaying())
+	{
+		SpeedEffectTimeLine.Reverse();
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("Timeline Reversed"));
+	}
+}
+
