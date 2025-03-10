@@ -3,6 +3,7 @@
 
 #include "Components/DownForceComponent.h"
 #include "Pawns/BaseCar.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values for this component's properties
 UDownForceComponent::UDownForceComponent()
@@ -28,7 +29,10 @@ void UDownForceComponent::BeginPlay()
 // Called every frame
 void UDownForceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
+	double StartTime = FPlatformTime::Seconds();
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	double EndTime = FPlatformTime::Seconds();
+	GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::Red, FString::Printf(TEXT("Tick Time: %f ms"), (EndTime - StartTime) * 1000));
 
 	if (Body != nullptr && BaseCar != nullptr) {
 		// Raycasting to the bottom of the car
@@ -38,40 +42,61 @@ void UDownForceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 
 		float Angle = FMath::Acos(FVector::DotProduct(Body->GetUpVector(), FVector::UpVector)) * (180.f / PI);
 
-		bool bHit = GetWorld()->LineTraceSingleByChannel(
-			HitResult,
+		TArray<AActor*> ActorsToIgnore;
+		ActorsToIgnore.Add(GetOwner());
+
+		bool bHit = UKismetSystemLibrary::LineTraceSingle(
+			GetWorld(),
 			StartPos,
 			EndPos,
-			ECC_Visibility,
-			FCollisionQueryParams("", false, GetOwner())
+			UEngineTypes::ConvertToTraceType(ECC_Visibility),
+			false,
+			ActorsToIgnore,
+			EDrawDebugTrace::ForOneFrame,
+			HitResult,
+			false
 		);
 
 		//if (DebugLineTrace) {
-		DrawDebugLine(GetWorld(), StartPos, EndPos, bHit ? FColor::Green : FColor::Red, false, DeltaTime, 0, 1.0f);
+		//DrawDebugLine(GetWorld(), StartPos, EndPos, bHit ? FColor::Green : FColor::Red, false, DeltaTime, 0, 1.0f);
 		//};
 
 		// Setting variables to compute physics
 
 		FVector Velocity = Body->GetPhysicsLinearVelocity();
-
 		float DownForce = Body->GetMass() * GetWorld()->GetGravityZ();
+
 		float Speed = Velocity.Size();
+		float VerticalSpeed = FVector::DotProduct(Velocity, HitResult.ImpactNormal);
+
 		float AdhesionFactor = FMath::Clamp(Speed / BaseCar->GetAdhesionScale(), 1.0f, BaseCar->GetAdhesionMaxForce());
 		float AdjustedDownForce = DownForce * AdhesionFactor;
 
 		if (bHit) {
 			CurrentGravityFactor = FMath::FInterpTo(CurrentGravityFactor, SurfaceGravity, DeltaTime, 1.0f);
+			FQuat TargetRotation = FQuat::FindBetweenVectors(Body->GetUpVector(), HitResult.ImpactNormal);
+			FVector Torque = TargetRotation.GetRotationAxis() * TargetRotation.GetAngle() * DownForce * 1000.0f;
 
 			Body->AddForceAtLocation(HitResult.ImpactNormal * AdjustedDownForce * CurrentGravityFactor * DeltaTime, Body->GetComponentLocation());
+			Body->AddTorqueInDegrees(Torque);
 		}
 		else {
+			//FVector CurrentAngularVelocity = Body->GetPhysicsAngularVelocityInDegrees();
+			//FVector NewAngularVelocity = FMath::VInterpTo(CurrentAngularVelocity, FVector::ZeroVector, DeltaTime, 3.0f);
+			//Body->SetPhysicsAngularVelocityInDegrees(NewAngularVelocity);
+
 			Body->AddForceAtLocation(FVector::UpVector * DownForce * DeltaTime * AirGravity, Body->GetComponentLocation());
 
 			if (Angle > 20)
 			{
-				//Body->AddTorqueInDegrees(Body->GetRightVector() * Body->GetMass() * 300.0f * DeltaTime);
+
 			}
 
+			FVector CorrectionTorque = FVector::CrossProduct(Body->GetUpVector(), FVector::UpVector) * Body->GetMass() * 500000000.0f;
+			FVector DampenedAngularVelocity = FMath::VInterpTo(Body->GetPhysicsAngularVelocityInDegrees(), FVector::ZeroVector, DeltaTime, 2.0f);
+			Body->AddTorqueInDegrees(CorrectionTorque);
+
+			Body->SetPhysicsAngularVelocityInDegrees(DampenedAngularVelocity);
 		}
 
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Angle: %f"), Angle));

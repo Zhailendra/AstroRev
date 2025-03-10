@@ -3,6 +3,7 @@
 
 #include "Components/HoverComponent.h"
 #include "Pawns/BaseCar.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values for this component's properties
 UHoverComponent::UHoverComponent()
@@ -34,18 +35,23 @@ void UHoverComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 		FVector StartPos = GetComponentLocation();
 		FVector EndPos = GetComponentLocation() - (GetUpVector() * DistanceBetweenHoverToGround);
 		FHitResult HitResult;
+
+		TArray<AActor*> ActorsToIgnore;
+		ActorsToIgnore.Add(GetOwner());
 		
-		bool bHit = GetWorld()->LineTraceSingleByChannel(
-			HitResult,
+		bool bHit = UKismetSystemLibrary::LineTraceSingle(
+			GetWorld(),
 			StartPos,
 			EndPos,
-			ECC_Visibility,
-			FCollisionQueryParams("", false, GetOwner())
+			UEngineTypes::ConvertToTraceType(ECC_Visibility),
+			false,
+			ActorsToIgnore,
+			EDrawDebugTrace::ForOneFrame,
+			HitResult,
+			false,
+			FLinearColor::Red,
+			FLinearColor::Green
 		);
-		
-		if (DebugLineTrace == true) {
-			DrawDebugLine(GetWorld(), StartPos, EndPos, bHit ? FColor::Green : FColor::Red, false, DeltaTime, 0, 1.0f);
-		};
 
 		FVector Velocity = Body->GetPhysicsLinearVelocity();
 		float LandingSpeed = Velocity.Size();
@@ -59,7 +65,7 @@ void UHoverComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 			HoverForce *= DynamicDamping;
 			Body->AddForceAtLocation(GetUpVector() * HoverForce, GetComponentLocation());
 
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Hover Force: %f"), HoverForce));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Hover Force: %f"), HoverForce));
 		}
 	}
  }
