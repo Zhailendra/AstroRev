@@ -24,6 +24,12 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void ApplyBoost(float Value) const;
+	void ApplyZeroGravityDrag() const;
+
+	bool GetIsInZeroGravity() const { return bIsInZeroGravity; }
+	void SetIsInZeroGravity(bool Value) { bIsInZeroGravity = Value; }
+
 protected:
 
 	void AddPostProcessEffect();
@@ -35,7 +41,7 @@ protected:
 
 	void OnTrustTriggered(const FInputActionValue& Value);
 	void OnThrustCompleted(const FInputActionValue& Value);
-	
+
 private:
 	UPROPERTY(EditAnywhere, Category = "Component", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* SpringArmComponent;
@@ -66,5 +72,13 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "TimeLine")
 	UCurveFloat* SpeedCurveFloat;
+
+	bool bIsInZeroGravity = false;
+
+	UPROPERTY(EditAnywhere, Category = "GravityDragForce")
+	float MaxDragForce = 22000.0f;
+
+	UPROPERTY(EditAnywhere, Category = "GravityDragForce")
+	float DragForceMultiplier = 800.0f;
 
 };

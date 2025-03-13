@@ -65,7 +65,7 @@ void UHoverComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 			HoverForce *= DynamicDamping;
 			Body->AddForceAtLocation(GetUpVector() * HoverForce, GetComponentLocation());
 
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Hover Force: %f"), HoverForce));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Hover Force: %f"), HoverForce));
 		}
 	}
  }

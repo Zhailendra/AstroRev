@@ -14,6 +14,8 @@ ABaseCar::ABaseCar()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	Tags.Add(FName("Car"));
+
 	BaseCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("BaseCollider"));
 	RootComponent = BaseCollider;
 
@@ -78,7 +80,7 @@ void ABaseCar::Tick(float DeltaTime)
 	}
 
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Thrust: %f"), ForwardSpeed));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Steer: %f"), SteerSpeed));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Steer: %f"), SteerSpeed));
 }
 
 // Called to bind functionality to input

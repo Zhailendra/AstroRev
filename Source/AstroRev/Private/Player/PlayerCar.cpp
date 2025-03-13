@@ -9,6 +9,7 @@
 
 #include "Camera/CameraShakeBase.h"
 #include "Camera/MyLegacyCameraShake.h"
+#include "Components/BoxComponent.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Materials/MaterialParameterCollectionInstance.h"
 
@@ -41,7 +42,7 @@ void APlayerCar::BeginPlay() {
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("SpeedCurveFloat is NOT valid"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("SpeedCurveFloat is NOT valid"));
 	}
 
 }
@@ -53,12 +54,18 @@ void APlayerCar::Tick(float DeltaTime)
 	if (SpeedEffectTimeLine.IsPlaying())
 	{
 		SpeedEffectTimeLine.TickTimeline(DeltaTime);
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Timeline is Playing"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Timeline is Playing"));
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Timeline is NOT Playing"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Timeline is NOT Playing"));
 	}
+
+	if (bIsInZeroGravity)
+	{
+	    ApplyZeroGravityDrag();
+	}
+
 
 	float Speed = GetVelocity().Size();
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("SPEED: ") + FString::SanitizeFloat(Speed));
@@ -115,6 +122,33 @@ void APlayerCar::OnThrustCompleted(const FInputActionValue& Value)
 	Thrust(Value);
 }
 
+void APlayerCar::ApplyBoost(float Value) const
+{
+	if (!BaseCollider) return;
+
+	FVector BoostDirection = BaseCollider->GetForwardVector();
+	float Mass = BaseCollider->GetMass();
+    
+	BaseCollider->AddImpulse(BoostDirection * Value * Mass, NAME_None, true);
+    
+	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, TEXT("Boost Activated!"));
+}
+
+void APlayerCar::ApplyZeroGravityDrag() const
+{
+	if (!BaseCollider) return;
+
+	FVector Velocity = BaseCollider->GetComponentVelocity();
+    
+	if (Velocity.Z < -6000.0f) 
+	{
+		float DragForce = FMath::Clamp(FMath::Abs(Velocity.Z) * DragForceMultiplier, 1000.0f, MaxDragForce);
+
+		UE_LOG(LogTemp, Warning, TEXT("DragForce: %f"), DragForce);
+
+		BaseCollider->AddForce(FVector(0.0f, 0.0f, DragForce) * BaseCollider->GetMass());
+	}
+}
 
 void APlayerCar::AddPostProcessEffect()
 {
