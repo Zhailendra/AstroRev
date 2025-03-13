@@ -49,7 +49,7 @@ void ABaseCar::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	GEngine->ClearOnScreenDebugMessages();
+	//GEngine->ClearOnScreenDebugMessages();
 
 	FVector Velocity = BaseCollider->GetComponentVelocity();
 	FVector CurrentAngularVelocity = BaseCollider->GetPhysicsAngularVelocityInDegrees();
@@ -77,8 +77,8 @@ void ABaseCar::Tick(float DeltaTime)
 		BaseCollider->AddTorqueInDegrees(-BaseCollider->GetUpVector() * SteerSpeed * Steering * 10 * Mass);
 	}
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Thrust: %f"), ForwardSpeed));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Steer: %f"), SteerSpeed));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Thrust: %f"), ForwardSpeed));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Steer: %f"), SteerSpeed));
 }
 
 // Called to bind functionality to input

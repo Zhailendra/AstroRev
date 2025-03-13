@@ -53,11 +53,11 @@ void APlayerCar::Tick(float DeltaTime)
 	if (SpeedEffectTimeLine.IsPlaying())
 	{
 		SpeedEffectTimeLine.TickTimeline(DeltaTime);
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Timeline is Playing"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Timeline is Playing"));
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Timeline is NOT Playing"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Timeline is NOT Playing"));
 	}
 
 	float Speed = GetVelocity().Size();

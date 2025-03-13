@@ -32,7 +32,7 @@ void UDownForceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	double StartTime = FPlatformTime::Seconds();
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	double EndTime = FPlatformTime::Seconds();
-	GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::Red, FString::Printf(TEXT("Tick Time: %f ms"), (EndTime - StartTime) * 1000));
+	//GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::Red, FString::Printf(TEXT("Tick Time: %f ms"), (EndTime - StartTime) * 1000));
 
 	if (Body != nullptr && BaseCar != nullptr) {
 		// Raycasting to the bottom of the car
@@ -99,9 +99,9 @@ void UDownForceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 			Body->SetPhysicsAngularVelocityInDegrees(DampenedAngularVelocity);
 		}
 
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Angle: %f"), Angle));
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Velocity: %f"), Speed));
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Hover Adhesion Factor: %f"), AdhesionFactor));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Angle: %f"), Angle));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Velocity: %f"), Speed));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Hover Adhesion Factor: %f"), AdhesionFactor));
 	}
 }
 
