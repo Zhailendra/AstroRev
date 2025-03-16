@@ -30,6 +30,15 @@ public:
 	bool GetIsInZeroGravity() const { return bIsInZeroGravity; }
 	void SetIsInZeroGravity(bool Value) { bIsInZeroGravity = Value; }
 
+	UFUNCTION(BlueprintCallable)
+	void SetCheckPoint(AActor* LastCheckPoint) { this->CheckPoint = LastCheckPoint; }
+
+	UFUNCTION(BlueprintCallable)
+	AActor* GetCheckPoint() const { return this->CheckPoint; }
+
+	UFUNCTION(BlueprintCallable)
+	FVector GetBaseLocation() const { return BaseLocation; }
+
 protected:
 
 	void AddPostProcessEffect();
@@ -80,5 +89,11 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "GravityDragForce")
 	float DragForceMultiplier = 800.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Checkpoint", meta = (AllowPrivateAccess = "true"))
+	AActor* CheckPoint;
+
+	UPROPERTY(EditAnywhere, Category = "Checkpoint", meta = (AllowPrivateAccess = "true"))
+	FVector BaseLocation;
 
 };

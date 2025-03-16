@@ -45,6 +45,8 @@ void APlayerCar::BeginPlay() {
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("SpeedCurveFloat is NOT valid"));
 	}
 
+	BaseLocation = GetActorLocation();
+
 }
 
 void APlayerCar::Tick(float DeltaTime)
@@ -130,8 +132,6 @@ void APlayerCar::ApplyBoost(float Value) const
 	float Mass = BaseCollider->GetMass();
     
 	BaseCollider->AddImpulse(BoostDirection * Value * Mass, NAME_None, true);
-    
-	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, TEXT("Boost Activated!"));
 }
 
 void APlayerCar::ApplyZeroGravityDrag() const
@@ -143,8 +143,6 @@ void APlayerCar::ApplyZeroGravityDrag() const
 	if (Velocity.Z < -6000.0f) 
 	{
 		float DragForce = FMath::Clamp(FMath::Abs(Velocity.Z) * DragForceMultiplier, 1000.0f, MaxDragForce);
-
-		UE_LOG(LogTemp, Warning, TEXT("DragForce: %f"), DragForce);
 
 		BaseCollider->AddForce(FVector(0.0f, 0.0f, DragForce) * BaseCollider->GetMass());
 	}
