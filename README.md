@@ -1,33 +1,33 @@
 # AstroRev
 
-🚀 **AstroRev** est un jeu de course intergalactique où tu pilotés des véhicules futuristes à travers l'espace en split screen, avec des mécaniques de course innovantes, comme la simulation des physiquse de flottement par rapport au sol, des boosts, et des zones de gravité réduite. Développe tes compétences de pilote à travers des environnements dynamiques et compétitifs. Construit avec **Unreal Engine** en utilisant **C++** et **Blueprints**, AstroRev te plonge dans une expérience de course épique à travers l'univers ! 🌌🏎️✨
+🚀 **AstroRev** is an intergalactic racing game where you pilot futuristic vehicles through space in split-screen mode, featuring innovative racing mechanics like hover physics, boosts, and reduced gravity zones. Sharpen your piloting skills across dynamic and competitive environments. Built with **Unreal Engine** using **C++** and **Blueprints**, AstroRev immerses you in an epic racing experience through the universe! 🌌🏎️✨
 
-## 🎮 Fonctionnalités
-- **Course Spatiale Intense** – Traverse des parcours intergalactiques, en affrontant des adversaires dans des courses de haute vitesse.
-- **Simulations de Physique de Flottement** – Ressens l'effet de la gravité réduite et de la gravité normale tout en adaptant ton hovercraft aux conditions de chaque terrain.
-- **Boosts et Zones de Gravité** – Utilise des boosts pour accélérer et traverse des zones où la gravité est réduite pour prendre de l'avance !
-- **Personnalisation du Véhicule** – Améliore les capacités de ton hovercraft entre les courses pour gagner en vitesse, contrôle et efficacité.
-- **Environnements Dynamiques** – Des pistes avec des effets de gravité différents, des obstacles et des boosts disséminés tout au long des niveaux.
+## 🎮 Features
+- **Intense Space Racing** – Race through intergalactic tracks, facing off against opponents in high-speed races.
+- **Hover Physics Simulation** – Experience reduced gravity and normal gravity effects as you adapt your hovercraft to each terrain's conditions.
+- **Boosts and Gravity Zones** – Use boosts to accelerate and navigate through zones with reduced gravity to gain an edge!
+- **Vehicle Customization** – Upgrade your hovercraft's capabilities between races to enhance speed, control, and efficiency.
+- **Dynamic Environments** – Tracks with different gravity effects, obstacles, and boosts scattered throughout the levels.
 
-## 🛠️ Détails du Développement
-- Construit avec **Unreal Engine**.
-- Gameplay principal codé en **C++**.
-- Interface utilisateur développée avec **Blueprints**.
-- **Codebase Modulaire** – Les véhicules dérivent tous de la classe `BaseCar`, permettant une grande flexibilité pour l’ajout de nouveaux véhicules et comportements.
-                         – Les PowerUps dérivent de la class `BasePowerUp`.
+## 🛠️ Development Details
+- Built with **Unreal Engine**.
+- Main gameplay coded in **C++**.
+- User interface developed using **Blueprints**.
+- **Modular Codebase** – Vehicles inherit from `BaseCar`, allowing flexibility for adding new vehicles and behaviors.
+  – PowerUps inherit from `BasePowerUp`.
 
-### 📂 Fichiers Importants
-- **Classe de Véhicule Principal :** [BaseCar](Source\AstroRev\Public\Pawns\BaseCar.h)
-- **Classe de PowerUp Principale :** [BasePowerUp](Source\AstroRev\Public\PowerUp\BasePowerUp.h)
-- **Système de Boosts :** [BoosterPowerUp](Source\AstroRev\Public\PowerUp\BoosterPowerUp.h)
-- **Simulation de Gravité Réduite :** [ZeroGravityPowerUp](Source\AstroRev\Public\PowerUp\ZeroGravityPowerUp.h)
-- **Système de Moteur :** [HovercraftMovementComponents](Source\AstroRev\Public\Components)
+### 📂 Important Files
+- **Main Vehicle Class:** [BaseCar](Source/AstroRev/Public/Pawns/BaseCar.h)
+- **Main PowerUp Class:** [BasePowerUp](Source/AstroRev/Public/PowerUp/BasePowerUp.h)
+- **Boost PowerUp System:** [BoosterPowerUp](Source/AstroRev/Public/PowerUp/BoosterPowerUp.h)
+- **Reduced Gravity Simulation:** [ZeroGravityPowerUp](Source/AstroRev/Public/PowerUp/ZeroGravityPowerUp.h)
+- **Engine System:** [HovercraftMovementComponents](Source/AstroRev/Public/Components)
 
-## 🚀 Ajouter du Contenu
-AstroRev est conçu pour une extension facile :
-- **Ajouter des Niveaux :** Étends la liste des niveaux et configure les zones de gravité, obstacles et PowerUp pour chaque circuit.
-- **Créer de Nouveaux Véhicules :** Hérite de `BaseCar`, définis des comportements uniques pour ton hovercraft et intègre-les dans le jeu.
-- **Utiliser le Système de PowerUp :** Ajoute de nouveaux types de PowerUp ou objets en héritant de `BasePowerUp`.
+## 🚀 Adding Content
+AstroRev is designed for easy expansion:
+- **Adding New Levels:** Extend the level list and configure gravity zones, obstacles, and PowerUps for each track.
+- **Creating New Vehicles:** Inherit from `BaseCar`, define unique behaviors for your hovercraft, and integrate them into the game.
+- **Using the PowerUp System:** Add new types of PowerUps or objects by inheriting from `BasePowerUp`.
 
 ## 👥 Contributeurs
 - [@Zhailendra](https://github.com/Zhailendra)
