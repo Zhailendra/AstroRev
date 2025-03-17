@@ -31,7 +31,7 @@ void UHoverComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (GetOwner() && Body != nullptr && BaseCar != nullptr) {
+	if (GetOwner() && Body != nullptr && BaseCar != nullptr && Body->IsSimulatingPhysics()) {
 		FVector StartPos = GetComponentLocation();
 		FVector EndPos = GetComponentLocation() - (GetUpVector() * DistanceBetweenHoverToGround);
 		FHitResult HitResult;

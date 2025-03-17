@@ -14,21 +14,21 @@ void UMyLegacyCameraShake::SetOscillationSettings()
 	OscillationBlendInTime = 0.5f;
 	OscillationBlendOutTime = 0.5f;
 
-	RotOscillation.Pitch.Amplitude = 0.1f;
+	RotOscillation.Pitch.Amplitude = 1.1f;
 	RotOscillation.Pitch.Frequency = 1.4f;
 
-	RotOscillation.Yaw.Amplitude = 0.05f;
+	RotOscillation.Yaw.Amplitude = 1.05f;
 	RotOscillation.Yaw.Frequency = 1.f;
 
-	RotOscillation.Roll.Amplitude = 0.25f;
+	RotOscillation.Roll.Amplitude = 1.25f;
 	RotOscillation.Roll.Frequency = 1.f;
 
-	LocOscillation.X.Amplitude = 0.75f;
-	LocOscillation.X.Frequency = 2.5f;
+	LocOscillation.X.Amplitude = 3.75f;
+	LocOscillation.X.Frequency = 3.5f;
 
-	LocOscillation.Y.Amplitude = 0.5f;
+	LocOscillation.Y.Amplitude = 3.5f;
 	LocOscillation.Y.Frequency = 2.0f;
 
-	LocOscillation.Z.Amplitude = 0.25f;
+	LocOscillation.Z.Amplitude = 3.25f;
 	LocOscillation.Z.Frequency = 3.0f;
 }

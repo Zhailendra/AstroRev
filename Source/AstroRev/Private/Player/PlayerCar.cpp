@@ -79,7 +79,7 @@ void APlayerCar::Tick(float DeltaTime)
 
 	if (CameraComponent)
 	{
-		float NewFOV = FMath::Clamp(FMath::Lerp(80.0f, 100.0f, Speed / MaxSpeed), 80.0f, 100.0f);
+		float NewFOV = FMath::Clamp(FMath::Lerp(80.0f, 110.0f, Speed / MaxSpeed), 80.0f, 110.0f);
 		CameraComponent->SetFieldOfView(NewFOV);
 
 		if (Speed > 5000.0f) 
@@ -107,7 +107,7 @@ void APlayerCar::SetupPlayerInputComponent(class UInputComponent* PlayerInputCom
 		}
 		if (SteerAction)
 		{
-			EnhancedInputComponent->BindAction(SteerAction, ETriggerEvent::Started, this, &APlayerCar::Steer);
+			EnhancedInputComponent->BindAction(SteerAction, ETriggerEvent::Triggered, this, &APlayerCar::Steer);
 			EnhancedInputComponent->BindAction(SteerAction, ETriggerEvent::Completed, this, &APlayerCar::Steer);
 		}
 	}
