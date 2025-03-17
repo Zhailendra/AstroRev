@@ -41,6 +41,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Component", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UBoxComponent* BaseCollider;
 
+	UPROPERTY(EditAnywhere, Category = "Player Movement", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float InputThrust = 0.0f;
 	float InputSteer = 0.0f;
 
