@@ -55,14 +55,16 @@ void UHoverComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 
 		FVector Velocity = Body->GetPhysicsLinearVelocity();
 		float LandingSpeed = Velocity.Size();
-		float DynamicDamping = FMath::Clamp(LandingSpeed / BaseCar->GetAdhesionScale(), 0.1f, 3.0f);
+		float DynamicDamping = FMath::Clamp(LandingSpeed / BaseCar->GetAdhesionScale(), 0.1f, 2.0f);
 
 		if (bHit) {
 			float Compressor = (DistanceBetweenHoverToGround - HitResult.Distance) / DistanceBetweenHoverToGround;
-			HoverForce = (Compressor * Stiffness) + ((Compressor - PreviousCompression) / GetWorld()->GetDeltaSeconds() * Damping);
-			PreviousCompression = Compressor;
+			float CompressionForce = (Compressor * Stiffness) + ((Compressor - PreviousCompression) / GetWorld()->GetDeltaSeconds() * Damping);
+			float MaxForce = Stiffness * 1.5f;
 
-			HoverForce *= DynamicDamping;
+			PreviousCompression = Compressor;
+			HoverForce = FMath::Clamp(CompressionForce * DynamicDamping, -MaxForce, MaxForce);
+
 			Body->AddForceAtLocation(GetUpVector() * HoverForce, GetComponentLocation());
 
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Hover Force: %f"), HoverForce));
