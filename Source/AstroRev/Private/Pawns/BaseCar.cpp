@@ -70,7 +70,7 @@ void ABaseCar::Tick(float DeltaTime)
 		BaseCollider->AddForce(-Velocity.GetSafeNormal() * Torque * Mass);
 	}
 
-	if (InputSteer != 0 && FMath::Abs(InputSteer) > 0.2f) {
+	if (InputSteer != 0 && FMath::Abs(InputSteer) > 0.5f) {
 		if (FMath::Abs(SteerSpeed) < MaxSteer) {
 			BaseCollider->AddTorqueInDegrees(BaseCollider->GetUpVector() * Steering * 1000.0 * InputSteer * Mass);
 		}
