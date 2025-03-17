@@ -16,6 +16,7 @@ public:
 	ABoosterPowerUp();
 
 protected:
+	virtual void BeginPlay() override;
 	
 	UFUNCTION()
 	void OnBoxOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,

@@ -5,6 +5,17 @@
 
 ABoosterPowerUp::ABoosterPowerUp()
 {
+	//if (BoxCollider)
+	//{
+	//	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 3, FColor::Red, TEXT("VOOTIUUURE"));
+	//	BoxCollider->OnComponentBeginOverlap.AddDynamic(this, &ABoosterPowerUp::OnBoxOverlapBegin);
+	//}
+}
+
+void ABoosterPowerUp::BeginPlay()
+{
+	Super::BeginPlay();
+
 	if (BoxCollider)
 	{
 		BoxCollider->OnComponentBeginOverlap.AddDynamic(this, &ABoosterPowerUp::OnBoxOverlapBegin);

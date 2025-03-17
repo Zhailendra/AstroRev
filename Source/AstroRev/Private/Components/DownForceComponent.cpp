@@ -34,7 +34,7 @@ void UDownForceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	double EndTime = FPlatformTime::Seconds();
 	//GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::Red, FString::Printf(TEXT("Tick Time: %f ms"), (EndTime - StartTime) * 1000));
 
-	if (Body != nullptr && BaseCar != nullptr) {
+	if (Body != nullptr && BaseCar != nullptr && Body->IsSimulatingPhysics()) {
 		// Raycasting to the bottom of the car
 		FVector StartPos = Body->GetComponentLocation();
 		FVector EndPos = Body->GetComponentLocation() - (Body->GetUpVector() * 400);
@@ -69,7 +69,7 @@ void UDownForceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 		float Speed = Velocity.Size();
 		float VerticalSpeed = FVector::DotProduct(Velocity, HitResult.ImpactNormal);
 
-		float AdhesionFactor = FMath::Clamp(Speed / BaseCar->GetAdhesionScale(), 1.0f, BaseCar->GetAdhesionMaxForce());
+		float AdhesionFactor = FMath::Clamp(Speed / BaseCar->GetAdhesionScale() + 1, 1.0f, BaseCar->GetAdhesionMaxForce() + 1);
 		float AdjustedDownForce = DownForce * AdhesionFactor;
 
 		if (bHit) {

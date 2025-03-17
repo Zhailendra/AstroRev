@@ -5,6 +5,13 @@
 
 AZeroGravityPowerUp::AZeroGravityPowerUp()
 {
+
+}
+
+void AZeroGravityPowerUp::BeginPlay()
+{
+	Super::BeginPlay();
+
 	if (BoxCollider)
 	{
 		BoxCollider->OnComponentBeginOverlap.AddDynamic(this, &AZeroGravityPowerUp::OnBoxOverlapBegin);

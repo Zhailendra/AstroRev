@@ -24,7 +24,7 @@ void UStabilizerComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (Body) {
+	if (Body && Body->IsSimulatingPhysics()) {
 		Body->AddForce(FVector::DotProduct(Body->GetPhysicsLinearVelocity(), Body->GetRightVector()) * -LateralForceReduction * Body->GetRightVector());
 	}
 }
