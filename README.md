@@ -2,6 +2,11 @@
 
 🚀 **AstroRev** is an intergalactic racing game where you pilot futuristic vehicles through space in split-screen mode, featuring innovative racing mechanics like hover physics, boosts, and reduced gravity zones. Sharpen your piloting skills across dynamic and competitive environments. Built with **Unreal Engine** using **C++** and **Blueprints**, AstroRev immerses you in an epic racing experience through the universe! 🌌🏎️✨
 
+<p align="center">
+  <img src="Content\02-Assets\Images\AstroRevInGame.png" width="500" height="300">
+</p>
+
+
 ## 🎮 Features
 - **Intense Space Racing** – Race through intergalactic tracks, facing off against opponents in high-speed races.
 - **Hover Physics Simulation** – Experience reduced gravity and normal gravity effects as you adapt your hovercraft to each terrain's conditions.
