@@ -11,7 +11,6 @@
 - **Intense Space Racing** – Race through intergalactic tracks, facing off against opponents in high-speed races.
 - **Hover Physics Simulation** – Experience reduced gravity and normal gravity effects as you adapt your hovercraft to each terrain's conditions.
 - **Boosts and Gravity Zones** – Use boosts to accelerate and navigate through zones with reduced gravity to gain an edge!
-- **Vehicle Customization** – Upgrade your hovercraft's capabilities between races to enhance speed, control, and efficiency.
 - **Dynamic Environments** – Tracks with different gravity effects, obstacles, and boosts scattered throughout the levels.
 
 ## 🛠️ Development Details
